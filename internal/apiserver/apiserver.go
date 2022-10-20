@@ -5,7 +5,6 @@ import (
 	"billingService/internal/usecase/service"
 	"context"
 	"github.com/gin-gonic/gin"
-	"github.com/spf13/viper"
 	"net/http"
 )
 
@@ -73,6 +72,4 @@ func (h *Handler) sayHello(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "Hello World!",
 	})
-
-	viper.WriteConfig()
 }
