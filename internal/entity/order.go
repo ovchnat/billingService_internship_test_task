@@ -27,7 +27,9 @@ type ReserveServiceFeeRequest struct {
 type ReserveServiceFeeResponse struct {
 	UserId    int       `json:"user-id"`
 	ServiceId int       `json:"service-id"`
+	OrderId   int       `json:"order-id"`
 	Invoice   float64   `json:"invoice"`
-	Status    int       `json:"status"`
+	Status    string    `json:"status"`
 	CreatedAt time.Time `json:"created-at"`
+	UpdatedAt time.Time `json:"updated-at"`
 }

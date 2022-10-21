@@ -25,7 +25,8 @@ type UpdateBalanceRequest struct {
 	Sum    int64 `json:"update-amount" binding:"required"`
 }
 type UpdateBalanceResponse struct {
-	UserId  int   `json:"user-id" binding:"required"`
-	Balance int64 `json:"current-balance" binding:"required"`
-	Pending int64 `json:"user-pending-amount"`
+	AccountId int   `json:"account-id" binding:"required"`
+	UserId    int   `json:"user-id" binding:"required"`
+	Balance   int64 `json:"current-balance" binding:"required"`
+	Pending   int64 `json:"user-pending-amount"`
 }
