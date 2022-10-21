@@ -1,11 +1,15 @@
-package apiserver
+package handler
 
 import (
-	"billingService/internal/usecase/repository"
-	"billingService/internal/usecase/service"
+	"billingService/internal/repository"
+	"billingService/internal/service"
 	"context"
 	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
+	"github.com/spf13/viper"
 	"net/http"
+	"os"
 )
 
 type Handler struct {
@@ -26,7 +30,21 @@ func NewServer() *Server {
 
 func (s *Server) Start(Port string) error {
 
-	repos := repository.NewRepo()
+	db, err := repository.NewPostgresDB(repository.Config{
+		Host:     viper.GetString("db.host"),
+		Port:     viper.GetString("db.port"),
+		Username: viper.GetString("db.username"),
+		Password: os.Getenv("db_password"),
+		DBName:   viper.GetString("db.dbname"),
+		SSLMode:  viper.GetString("db.sslmode"),
+	})
+	if err != nil {
+		logrus.Fatalf("Can't establish connection to database: %s", err.Error())
+	} else {
+		logrus.Println("Database connection successfully established.")
+	}
+
+	repos := repository.NewRepo(db)
 	services := service.NewService(repos)
 	billingHandler := NewHandler(services)
 	billingRouter := billingHandler.configureRoutes()
@@ -48,7 +66,7 @@ func (h *Handler) configureRoutes() *gin.Engine {
 
 	router.GET("/sayHello", h.sayHello)
 
-	accountChanges := router.Group("/accountChanges/")
+	accountChanges := router.Group("/account/")
 	{
 		accountChanges.POST("/depositMoney", h.depositMoney)
 		accountChanges.POST("/withdrawMoney", h.withdrawMoney)
@@ -66,10 +84,4 @@ func (h *Handler) configureRoutes() *gin.Engine {
 	}
 
 	return router
-}
-
-func (h *Handler) sayHello(c *gin.Context) {
-	c.JSON(200, gin.H{
-		"message": "Hello World!",
-	})
 }
