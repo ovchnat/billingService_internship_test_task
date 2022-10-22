@@ -124,7 +124,7 @@ func (r *AccPostgres) GetBalance(userid entity.GetBalanceRequest, ctx *gin.Conte
 	query := fmt.Sprintf(
 		"SELECT ac.curr_amount, ac.pending_amount FROM accounts ac " +
 			"WHERE user_id = $1")
-	row := r.db.QueryRow(query, userid.UserId)
+	row := r.db.QueryRowContext(ctx, query, userid.UserId)
 
 	if err := row.Scan(
 		&balanceRes.Balance,
@@ -140,6 +140,11 @@ func (r *AccPostgres) DepositMoney(depositReq entity.UpdateBalanceRequest, ctx *
 
 	fail := func(err error) (entity.UpdateBalanceResponse, error) {
 		return depositRes, fmt.Errorf("DepositMoney: %v", err)
+	}
+
+	if depositReq.Sum < 0 {
+		err := errors.New("can't add negative funds")
+		return fail(err)
 	}
 
 	var exists bool
@@ -162,7 +167,19 @@ func (r *AccPostgres) DepositMoney(depositReq entity.UpdateBalanceRequest, ctx *
 		logrus.Errorf("")
 	}
 
-	defer tx.Rollback()
+	defer func() {
+		if err := recover(); err != nil {
+			rb := tx.Rollback()
+			if rb != nil {
+				errMsg := errors.New("rollback error")
+				_, err := fail(errMsg)
+				if err != nil {
+					return
+				}
+
+			}
+		}
+	}()
 
 	_, err = tx.ExecContext(ctx, addFundsQuery, depositReq.UserId, depositReq.Sum)
 
@@ -210,13 +227,29 @@ func (r *AccPostgres) WithdrawMoney(withdrawReq entity.UpdateBalanceRequest, ctx
 		return depositRes, fmt.Errorf("WithdrawMoney: %v", err)
 	}
 
+	if withdrawReq.Sum < 0 {
+		err := errors.New("can't withdraw negative funds")
+		return fail(err)
+	}
 	tx, err := r.db.BeginTx(ctx, nil)
 
 	if err != nil {
 		logrus.Errorf("")
 	}
 
-	defer tx.Rollback()
+	defer func() {
+		if err := recover(); err != nil {
+			rb := tx.Rollback()
+			if rb != nil {
+				errMsg := errors.New("rollback error")
+				_, err := fail(errMsg)
+				if err != nil {
+					return
+				}
+
+			}
+		}
+	}()
 
 	var idBalanceHolder struct {
 		Id      int64
@@ -279,13 +312,30 @@ func (r *AccPostgres) Transfer(transferReq entity.TransferRequest, ctx *gin.Cont
 		return transferRes, fmt.Errorf("TransferMoney: %v", err)
 	}
 
+	if transferReq.Sum < 0 {
+		err := errors.New("can't transfer negative amount")
+		return fail(err)
+	}
+
 	tx, err := r.db.BeginTx(ctx, nil)
 
 	if err != nil {
 		logrus.Errorf("")
 	}
 
-	defer tx.Rollback()
+	defer func() {
+		if err := recover(); err != nil {
+			rb := tx.Rollback()
+			if rb != nil {
+				errMsg := errors.New("rollback error")
+				_, err := fail(errMsg)
+				if err != nil {
+					return
+				}
+
+			}
+		}
+	}()
 
 	var idBalanceHolder struct {
 		Id      int64
@@ -369,6 +419,11 @@ func (r *AccPostgres) ReserveServiceFee(reserveSerFeeReq entity.ReserveServiceFe
 		return reserveRes, fmt.Errorf("ReserveServiceFee: %v", err)
 	}
 
+	if reserveSerFeeReq.Fee < 0 {
+		err := errors.New("can't reserve negative sum")
+		return fail(err)
+	}
+
 	tx, err := r.db.BeginTx(ctx, nil)
 
 	if err != nil {
@@ -376,7 +431,19 @@ func (r *AccPostgres) ReserveServiceFee(reserveSerFeeReq entity.ReserveServiceFe
 	}
 
 	// Defer a rollback in case anything fails.
-	defer tx.Rollback()
+	defer func() {
+		if err := recover(); err != nil {
+			rb := tx.Rollback()
+			if rb != nil {
+				errMsg := errors.New("rollback error")
+				_, err := fail(errMsg)
+				if err != nil {
+					return
+				}
+
+			}
+		}
+	}()
 
 	var exists bool
 
@@ -428,13 +495,30 @@ func (r *AccPostgres) ApproveServiceFee(approveSerFeeReq entity.StatusServiceFee
 		return approvalServiceFeeResponse, fmt.Errorf("ApproveServiceFee: %v", err)
 	}
 
+	if approveSerFeeReq.Fee < 0 {
+		err := errors.New("can't withdraw negative funds")
+		return fail(err)
+	}
+
 	tx, err := r.db.BeginTx(ctx, nil)
 
 	if err != nil {
 		logrus.Errorf("")
 	}
 
-	defer tx.Rollback()
+	defer func() {
+		if err := recover(); err != nil {
+			rb := tx.Rollback()
+			if rb != nil {
+				errMsg := errors.New("rollback error")
+				_, err := fail(errMsg)
+				if err != nil {
+					return
+				}
+
+			}
+		}
+	}()
 
 	var idBalanceHolder struct {
 		Id      int64
@@ -525,11 +609,29 @@ func (r *AccPostgres) FailedServiceFee(failedServiceFeeReq entity.StatusServiceF
 		logrus.Errorf("")
 	}
 
-	defer tx.Rollback()
+	defer func() {
+		if err := recover(); err != nil {
+			rb := tx.Rollback()
+			if rb != nil {
+				errMsg := errors.New("rollback error")
+				_, err := fail(errMsg)
+				if err != nil {
+					return
+				}
 
-	var id int
+			}
+		}
+	}()
 
-	if err = tx.QueryRowContext(ctx, getIdBalanceQuery, failedServiceFeeReq.UserId).Scan(&id); err != nil {
+	var idBalance struct {
+		Id  int64
+		Bal int64
+	}
+
+	if err = tx.QueryRowContext(ctx, getIdBalanceQuery, failedServiceFeeReq.UserId).Scan(
+		&idBalance.Id,
+		&idBalance.Bal,
+	); err != nil {
 		if err == sql.ErrNoRows {
 			logrus.Errorf("no account with that user-id: create a new one by depositing money")
 			err = errors.New("no account with that user-id")
