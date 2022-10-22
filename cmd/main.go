@@ -10,11 +10,11 @@ import (
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	if err := initConfig(); err != nil {
-		logrus.Fatalf("Can't initialize configs: %s", err.Error())
+		logrus.Fatalf("Can't initialize config: %s", err.Error())
 	}
 
 	if err := godotenv.Load("../.env"); err != nil {
-		logrus.Fatalf("can't load env variables: %s", err.Error())
+		logrus.Fatalf("Can't load env variables: %s", err.Error())
 	}
 
 	srv := handler.NewServer()

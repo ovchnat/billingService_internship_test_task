@@ -4,11 +4,11 @@ import "time"
 
 // Order /* */
 type Order struct {
-	Id        int       `json:"order-id"`
-	UserId    int       `json:"user-id"`
-	ServiceId int       `json:"service-id"`
-	OrderId   int       `json:"order-id"`
-	Amount    float64   `json:"money-amount"`
+	Id        int64     `json:"order-id"`
+	UserId    int64     `json:"user-id"`
+	ServiceId int64     `json:"service-id"`
+	OrderId   int64     `json:"order-id"`
+	Amount    int64     `json:"money-amount"`
 	Status    string    `json:"status"`
 	Timecode  time.Time `json:"timecode"`
 }
@@ -18,17 +18,34 @@ type Order struct {
 // Принимает id пользователя, ИД услуги, ИД заказа, стоимость.
 
 type ReserveServiceFeeRequest struct {
-	UserId    int     `json:"user-id"`
-	ServiceId int     `json:"service-id"`
-	OrderId   int     `json:"order-id"`
-	Fee       float64 `json:"fee"`
+	UserId    int64 `json:"user-id"`
+	ServiceId int64 `json:"service-id"`
+	OrderId   int64 `json:"order-id"`
+	Fee       int64 `json:"fee"`
 }
 
 type ReserveServiceFeeResponse struct {
-	UserId    int       `json:"user-id"`
-	ServiceId int       `json:"service-id"`
-	OrderId   int       `json:"order-id"`
-	Invoice   float64   `json:"invoice"`
+	AccountId int64     `json:"account-id"`
+	ServiceId int64     `json:"service-id"`
+	OrderId   int64     `json:"order-id"`
+	Invoice   int64     `json:"invoice"`
+	Status    string    `json:"status"`
+	CreatedAt time.Time `json:"created-at"`
+	UpdatedAt time.Time `json:"updated-at"`
+}
+
+type StatusServiceFeeRequest struct {
+	UserId    int64 `json:"user-id"`
+	ServiceId int64 `json:"service-id"`
+	OrderId   int64 `json:"order-id"`
+	Fee       int64 `json:"fee"`
+}
+
+type StatusServiceFeeResponse struct {
+	AccountId int64     `json:"account-id"`
+	ServiceId int64     `json:"service-id"`
+	OrderId   int64     `json:"order-id"`
+	Invoice   int64     `json:"invoice"`
 	Status    string    `json:"status"`
 	CreatedAt time.Time `json:"created-at"`
 	UpdatedAt time.Time `json:"updated-at"`

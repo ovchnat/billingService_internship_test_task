@@ -34,7 +34,7 @@ func (s *Server) Start(Port string) error {
 		Host:     viper.GetString("db.host"),
 		Port:     viper.GetString("db.port"),
 		Username: viper.GetString("db.username"),
-		Password: os.Getenv("db_password"),
+		Password: os.Getenv("DB_PASSWORD"),
 		DBName:   viper.GetString("db.dbname"),
 		SSLMode:  viper.GetString("db.sslmode"),
 	})
@@ -71,9 +71,10 @@ func (h *Handler) configureRoutes() *gin.Engine {
 		accountChanges.POST("/depositMoney", h.depositMoney)
 		accountChanges.POST("/withdrawMoney", h.withdrawMoney)
 		accountChanges.GET("/getBalance", h.getBalance)
-		accountChanges.POST("/reserveAmount", h.reserveAmount)
-		accountChanges.POST("/orderConfirm", h.orderConfirm)
+		accountChanges.POST("/reserveServiceFee", h.reserveServiceFee)
+		accountChanges.POST("/approveServiceFee", h.approveOrderFee)
 		accountChanges.POST("/transfer", h.transfer)
+		accountChanges.POST("/failedServiceFee", h.failedServiceFee)
 
 	}
 

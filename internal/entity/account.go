@@ -4,15 +4,15 @@ import "time"
 
 // Account /* */
 type Account struct {
-	Id            int       `json:"order-id"`
-	UserId        int       `json:"user-id" binding:"required"`
+	Id            int64     `json:"order-id"`
+	UserId        int64     `json:"user-id" binding:"required"`
 	CurrAmount    float64   `json:"money-amount" binding:"required"`
-	PendingAmount string    `json:"status"`
+	PendingAmount string    `json:"pending-amount"`
 	LastUpdatedAt time.Time `json:"last-updated-time"`
 }
 
 type GetBalanceRequest struct {
-	UserId int `json:"user-id" binding:"required"`
+	UserId int64 `json:"user-id" binding:"required"`
 }
 
 type GetBalanceResponse struct {
@@ -21,12 +21,13 @@ type GetBalanceResponse struct {
 }
 
 type UpdateBalanceRequest struct {
-	UserId int   `json:"user-id" binding:"required"`
+	UserId int64 `json:"user-id" binding:"required"`
 	Sum    int64 `json:"update-amount" binding:"required"`
 }
 type UpdateBalanceResponse struct {
-	AccountId int   `json:"account-id" binding:"required"`
-	UserId    int   `json:"user-id" binding:"required"`
-	Balance   int64 `json:"current-balance" binding:"required"`
-	Pending   int64 `json:"user-pending-amount"`
+	AccountId int64     `json:"account-id" binding:"required"`
+	Sum       int64     `json:"sum" binding:"required"`
+	Status    string    `json:"operation-status" binding:"required"`
+	EventType string    `json:"event-type"`
+	CreatedAt time.Time `json:"created-at"`
 }

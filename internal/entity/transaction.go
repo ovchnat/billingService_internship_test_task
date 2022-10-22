@@ -4,21 +4,25 @@ import "time"
 
 // Transaction /* */
 type Transaction struct {
-	Id            int       `json:"tx-id"`
-	AccountIdTo   int       `json:"receive-account"`
-	AccountIdFrom int       `json:"transfer-account"`
-	Amount        float64   `json:"money-amount"`
+	Id            int64     `json:"tx-id"`
+	AccountIdTo   int64     `json:"receive-account"`
+	AccountIdFrom int64     `json:"transfer-account"`
+	Amount        int64     `json:"money-amount"`
 	Status        string    `json:"status"`
 	Timecode      time.Time `json:"timecode"`
 }
 
 type TransferRequest struct {
-	SenderId   int   `json:"sender-id" binding:"required"`
-	ReceiverId int   `json:"receiver-id" binding:"required"`
+	SenderId   int64 `json:"sender-id" binding:"required"`
+	ReceiverId int64 `json:"receiver-id" binding:"required"`
 	Sum        int64 `json:"transfer-amount" binding:"required"`
 }
 
 type TransferResponse struct {
-	Message     string `json:"message"`
-	Transaction `json:"transaction-info"`
+	AccountIdTo   int64     `json:"receive-account"`
+	AccountIdFrom int64     `json:"transfer-account"`
+	Amount        int64     `json:"money-amount"`
+	Status        string    `json:"status"`
+	EventType     string    `json:"event-type"`
+	Timecode      time.Time `json:"created-at"`
 }
