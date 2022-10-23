@@ -212,7 +212,7 @@ make compose-up
      "csv-file-link": "../reports/servicesReport10-23-2022.csv"
   }
   ```
- ![service-reports-csv-image](https://github.com/https://github.com/ovchnat/billingService_internship_test_task/assets/csv-report-service.png)
+ ![service-reports-csv-image](https://github.com/https://github.com/ovchnat/billingService_internship_test_task/assets/csv-report-service.png) </br>
 ** Метод получения отчета по операциям пользователя: отчет создается в формате CSV-файла. На вход получает идентификатор пользователя, диапазон дат отчета, поле сортировки (по сумме или дате), метод сортировки (от большего к меньшего, от меньшего к большему) номер выдаваемой страницы (10 записей на странице). 
 
 **Постановка задания:**
@@ -246,6 +246,6 @@ make compose-up
       /reports/userTransactionsReport10-23-2022.csv
   }
   ```
-  ![transactions-csv-image](https://github.com/https://github.com/ovchnat/billingService_internship_test_task/assets/csv-report-transactions.png)
+  ![transactions-csv-image](https://github.com/https://github.com/ovchnat/billingService_internship_test_task/assets/csv-report-transactions.png) </br>
 ## Схема базы данных:
-  ![database-image](https://github.com/https://github.com/ovchnat/billingService_internship_test_task/assets/avitoDb_schema.png)
+  ![database-image](https://github.com/https://github.com/ovchnat/billingService_internship_test_task/assets/avitoDb_schema.png) </br>
