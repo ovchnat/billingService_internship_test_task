@@ -52,11 +52,11 @@ make compose-down
 make compose-test
 ```
 Работа интеграционных тестов:
-#  ![testing-image](/assets/testing-csv.png) </br>
+#  ![Работа интеграционных тестов:](/assets/testing-csv.png) </br>
 
 В проект интегрирована автоматическая документация **Swagger**. Она доступна по адресу: [https://localhost:8080/swagger/index.html](https://localhost:8080/swagger/index.html)
 Работа Swagger:
-#   ![swagger-image](/assets/swagger-works.png) </br>
+#   ![Работа Swagger:](/assets/swagger-works.png) </br>
 
 Для включения постоянного хранилища данных в PostgreSQL необходимо подмонтировать директорию к контейнеру БД. Для этого нужно раскомментировать в файле docker-compose.yml следующую строку:
 
@@ -64,7 +64,7 @@ make compose-test
 #      - postgres_data:/var/lib/postgresql/data
 ```
 ## Схема базы данных:
-  ![database-image](/assets/avitoDb_schema.png) </br>
+  ![Схема базы данных:](/assets/avitoDb_schema.png) </br>
 
 
 # Реализованные методы:
