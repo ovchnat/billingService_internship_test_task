@@ -62,6 +62,8 @@ make compose-test
 ```
 #      - postgres_data:/var/lib/postgresql/data
 ```
+## Схема базы данных:
+  ![database-image](/assets/avitoDb_schema.png) </br>
 
 
 # Реализованные методы:
@@ -313,5 +315,3 @@ make compose-test
   ``` 
   GET /reports/:filepath
   ```
-## Схема базы данных:
-  ![database-image](/assets/avitoDb_schema.png) </br>
