@@ -20,6 +20,3 @@ run: build ### Run billing app locally
 
 build: ### Build billing app locally
 	go mod download && go build -o ./cmd/billing ./cmd/main.go
-
-test: ### Run tests on billing app locally
-	go test -v -race -timeout 30s ./...
