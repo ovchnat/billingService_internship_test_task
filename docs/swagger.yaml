@@ -1,0 +1,425 @@
+basePath: /
+definitions:
+  entity.GetBalanceResponse:
+    properties:
+      user-balance:
+        type: integer
+      user-pending-amount:
+        type: integer
+    type: object
+  entity.GetTransactionsReq:
+    properties:
+      date-from:
+        type: string
+      date-to:
+        type: string
+      page:
+        type: integer
+      sort-by:
+        type: string
+      sort-order:
+        type: string
+      user-id:
+        type: integer
+    type: object
+  entity.GetTransactionsResponse:
+    properties:
+      csv-file-link:
+        type: string
+    type: object
+  entity.ReserveServiceFeeRequest:
+    properties:
+      fee:
+        type: integer
+      order-id:
+        type: integer
+      service-id:
+        type: integer
+      user-id:
+        type: integer
+    type: object
+  entity.ReserveServiceFeeResponse:
+    properties:
+      account-id:
+        type: integer
+      created-at:
+        type: string
+      invoice:
+        type: integer
+      order-id:
+        type: integer
+      service-id:
+        type: integer
+      status:
+        type: string
+      updated-at:
+        type: string
+    type: object
+  entity.ServiceMonthlyReportReq:
+    properties:
+      date-from:
+        type: string
+      date-to:
+        type: string
+    type: object
+  entity.ServiceMonthlyReportResponse:
+    properties:
+      csv-file-link:
+        type: string
+    type: object
+  entity.StatusServiceFeeRequest:
+    properties:
+      fee:
+        type: integer
+      order-id:
+        type: integer
+      service-id:
+        type: integer
+      user-id:
+        type: integer
+    type: object
+  entity.StatusServiceFeeResponse:
+    properties:
+      account-id:
+        type: integer
+      created-at:
+        type: string
+      invoice:
+        type: integer
+      order-id:
+        type: integer
+      service-id:
+        type: integer
+      status:
+        type: string
+      updated-at:
+        type: string
+    type: object
+  entity.TransferRequest:
+    properties:
+      receiver-id:
+        type: integer
+      sender-id:
+        type: integer
+      transfer-amount:
+        type: integer
+    required:
+    - receiver-id
+    - sender-id
+    - transfer-amount
+    type: object
+  entity.TransferResponse:
+    properties:
+      created-at:
+        type: string
+      event-type:
+        type: string
+      money-amount:
+        type: integer
+      receive-account:
+        type: integer
+      status:
+        type: string
+      transfer-account:
+        type: integer
+    type: object
+  entity.UpdateBalanceDepositResponse:
+    properties:
+      account-id:
+        type: integer
+      created-at:
+        type: string
+      deposit-sum:
+        type: integer
+      operation-event:
+        type: string
+      operation-status:
+        type: string
+    required:
+    - account-id
+    - deposit-sum
+    - operation-status
+    type: object
+  entity.UpdateBalanceRequest:
+    properties:
+      update-amount:
+        type: integer
+      user-id:
+        type: integer
+    required:
+    - update-amount
+    - user-id
+    type: object
+  entity.UpdateBalanceWithdrawResponse:
+    properties:
+      account-id:
+        type: integer
+      created-at:
+        type: string
+      deposit-sum:
+        type: integer
+      operation-event:
+        type: string
+      operation-status:
+        type: string
+    required:
+    - account-id
+    - deposit-sum
+    - operation-status
+    type: object
+  handler.errorAcc:
+    properties:
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API server for Avito billing app
+  title: Billing App API
+  version: "1.0"
+paths:
+  /account/approveOrderFee:
+    post:
+      consumes:
+      - application/json
+      description: '"Approve specified reservation"'
+      parameters:
+      - description: JSON object with used ID, service ID, order ID and fee amount
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.StatusServiceFeeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.StatusServiceFeeResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorAcc'
+      summary: approveOrderFee
+      tags:
+      - account
+  /account/depositMoney:
+    post:
+      consumes:
+      - application/json
+      description: '"deposit money for a given account"'
+      parameters:
+      - description: JSON object with user ID and money amount to deposit
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpdateBalanceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.UpdateBalanceDepositResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorAcc'
+      summary: depositMoney
+      tags:
+      - account
+  /account/failedServiceFee:
+    post:
+      consumes:
+      - application/json
+      description: '"Mark reservation as failed and release funds"'
+      parameters:
+      - description: JSON object with used ID, service ID, order ID and fee amount
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.StatusServiceFeeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.StatusServiceFeeResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorAcc'
+      summary: failedServiceFee
+      tags:
+      - account
+  /account/getBalance/{id}:
+    get:
+      description: '"Deposit money for a given account"'
+      parameters:
+      - description: user id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.GetBalanceResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorAcc'
+      summary: getBalance
+      tags:
+      - account
+  /account/reserveServiceFee:
+    post:
+      consumes:
+      - application/json
+      description: '"Put specified amount of money in reservation for a given account"'
+      parameters:
+      - description: JSON object with used ID, service ID, order ID and fee amount
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.ReserveServiceFeeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ReserveServiceFeeResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorAcc'
+      summary: reserveServiceFee
+      tags:
+      - account
+  /account/transfer:
+    post:
+      consumes:
+      - application/json
+      description: '"Transfer funds from one account to another"'
+      parameters:
+      - description: JSON object with sender ID, receiver ID and money amount
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.TransferRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.TransferResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorAcc'
+      summary: transfer
+      tags:
+      - account
+  /account/withdrawMoney:
+    post:
+      consumes:
+      - application/json
+      description: '"Withdraw money for a given account"'
+      parameters:
+      - description: JSON object with user ID and money amount to withdraw
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UpdateBalanceRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.UpdateBalanceWithdrawResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorAcc'
+      summary: withdrawMoney
+      tags:
+      - account
+  /reports/:path:
+    get:
+      description: '"Transfer funds from one account to another"'
+      responses:
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorAcc'
+      summary: getCSVFile
+      tags:
+      - reports
+  /reports/servicesMonthly:
+    post:
+      consumes:
+      - application/json
+      description: '"Get monthly report"'
+      parameters:
+      - description: JSON object with service ID, date from and date to
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.ServiceMonthlyReportReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.ServiceMonthlyReportResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorAcc'
+      summary: servicesMonthly
+      tags:
+      - reports
+  /reports/transactions:
+    post:
+      consumes:
+      - application/json
+      description: '"Print user transactions log"'
+      parameters:
+      - description: JSON object with user ID, sorting method , date from and date
+          to
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/entity.GetTransactionsReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.GetTransactionsResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handler.errorAcc'
+      summary: transactions
+      tags:
+      - reports
+swagger: "2.0"

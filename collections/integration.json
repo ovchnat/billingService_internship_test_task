@@ -1,0 +1,1205 @@
+{
+	"info": {
+		"_postman_id": "a8e2d1ff-dad6-47c9-bb72-bbf81fb6ab53",
+		"name": "integration_testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "successful money deposit #1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"account-id\"]).to.equal(1)",
+							"    pm.expect(pm.response.json()[\"operation-event\"]).to.equal(\"Deposit\")",
+							"    pm.expect(pm.response.json()[\"operation-status\"]).to.equal(\"Completed\")",
+							"    pm.expect(pm.response.json()[\"sum-deposited\"]).to.equal(1000)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"update-amount\": 1000,\n  \"user-id\": 1\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/depositMoney",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"depositMoney"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "successful money deposit #2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"account-id\"]).to.equal(2)",
+							"    pm.expect(pm.response.json()[\"operation-event\"]).to.equal(\"Deposit\")",
+							"    pm.expect(pm.response.json()[\"operation-status\"]).to.equal(\"Completed\")",
+							"    pm.expect(pm.response.json()[\"sum-deposited\"]).to.equal(500)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"update-amount\": 500,\n  \"user-id\": 2\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/depositMoney",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"depositMoney"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "negative amount deposit attempt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"DepositMoney: can't add negative or zero funds\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"update-amount\": -1000,\n  \"user-id\": 1\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/depositMoney",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"depositMoney"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deposit attempt for an illegal user id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"DepositMoney: illegal user ID\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"update-amount\": 1000,\n  \"user-id\": -1\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/depositMoney",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"depositMoney"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "successful money withdrawal",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"account-id\"]).to.equal(1)",
+							"    pm.expect(pm.response.json()[\"operation-event\"]).to.equal(\"Withdrawal\")",
+							"    pm.expect(pm.response.json()[\"operation-status\"]).to.equal(\"Completed\")",
+							"    pm.expect(pm.response.json()[\"sum-withdrawn\"]).to.equal(200)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"user-id\": 1,\n  \"update-amount\": 200\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/withdrawMoney",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"withdrawMoney"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "negative amount withdrawal attempt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"WithdrawMoney: can't withdraw negative funds\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"user-id\": 1,\n  \"update-amount\": -200\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/withdrawMoney",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"withdrawMoney"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "money withdrawal attempt for illegal user id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"WithdrawMoney: illegal user ID\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"user-id\": -1,\n  \"update-amount\": 200\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/withdrawMoney",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"withdrawMoney"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "successful balance request",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"user-balance\"]).to.equal(800)",
+							"    pm.expect(pm.response.json()[\"user-pending-amount\"]).to.equal(0)",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://billing:8080/account/getBalance/1",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"getBalance",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "balance request attempt for illegal user id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"GetBalance: illegal user ID\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://billing:8080/account/getBalance/-1",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"getBalance",
+						"-1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "successful reservation #1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"account-id\"]).to.equal(2)",
+							"    pm.expect(pm.response.json()[\"invoice\"]).to.equal(300)",
+							"    pm.expect(pm.response.json()[\"order-id\"]).to.equal(10)",
+							"    pm.expect(pm.response.json()[\"service-id\"]).to.equal(20)",
+							"    pm.expect(pm.response.json()[\"status\"]).to.equal(\"Pending\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fee\": 300,\n  \"order-id\": 10,\n  \"service-id\": 20,\n  \"user-id\": 2\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/reserveServiceFee",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"reserveServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "successful reservation #2",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"account-id\"]).to.equal(2)",
+							"    pm.expect(pm.response.json()[\"invoice\"]).to.equal(400)",
+							"    pm.expect(pm.response.json()[\"order-id\"]).to.equal(30)",
+							"    pm.expect(pm.response.json()[\"service-id\"]).to.equal(40)",
+							"    pm.expect(pm.response.json()[\"status\"]).to.equal(\"Pending\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fee\": 400,\n  \"order-id\": 30,\n  \"service-id\": 40,\n  \"user-id\": 2\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/reserveServiceFee",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"reserveServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "successful reservation #3",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"account-id\"]).to.equal(1)",
+							"    pm.expect(pm.response.json()[\"invoice\"]).to.equal(800)",
+							"    pm.expect(pm.response.json()[\"order-id\"]).to.equal(50)",
+							"    pm.expect(pm.response.json()[\"service-id\"]).to.equal(40)",
+							"    pm.expect(pm.response.json()[\"status\"]).to.equal(\"Pending\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fee\": 800,\n  \"order-id\": 50,\n  \"service-id\": 40,\n  \"user-id\": 1\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/reserveServiceFee",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"reserveServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "negative amount reservation attempt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"ReserveServiceFee: can't reserve negative sum\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fee\": -400,\n  \"order-id\": 30,\n  \"service-id\": 40,\n  \"user-id\": 2\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/reserveServiceFee",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"reserveServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reservation attempt with illegal user id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"ReserveServiceFee: illegal user ID\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fee\": 400,\n  \"order-id\": 30,\n  \"service-id\": 40,\n  \"user-id\": -1\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/reserveServiceFee",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"reserveServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reservation attempt with illegal service id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"ReserveServiceFee: illegal service ID\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fee\": 400,\n  \"order-id\": 30,\n  \"service-id\": -40,\n  \"user-id\": 1\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/reserveServiceFee",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"reserveServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reservation attempt with illegal order id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"ReserveServiceFee: illegal order ID\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fee\": 400,\n  \"order-id\": -30,\n  \"service-id\": 40,\n  \"user-id\": 1\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/reserveServiceFee",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"reserveServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "successful fee approvement",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"account-id\"]).to.equal(2)",
+							"    pm.expect(pm.response.json()[\"invoice\"]).to.equal(300)",
+							"    pm.expect(pm.response.json()[\"order-id\"]).to.equal(10)",
+							"    pm.expect(pm.response.json()[\"service-id\"]).to.equal(20)",
+							"    pm.expect(pm.response.json()[\"status\"]).to.equal(\"Approved\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fee\": 300,\n  \"order-id\": 10,\n  \"service-id\": 20,\n  \"user-id\": 2\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/approveServiceFee",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"approveServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "approvement attempt with not enough funds",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"ApproveServiceFee: not enough funds\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fee\": 400,\n  \"order-id\": 30,\n  \"service-id\": 40,\n  \"user-id\": 2\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/approveServiceFee",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"approveServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "approvement attempt of an inexistent reservation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"ApproveServiceFee: sql: no rows in result set\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fee\": 400,\n  \"order-id\": -30,\n  \"service-id\": 50,\n  \"user-id\": 5\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/approveServiceFee",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"approveServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "successful service fee fail",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"account-id\"]).to.equal(2)",
+							"    pm.expect(pm.response.json()[\"invoice\"]).to.equal(400)",
+							"    pm.expect(pm.response.json()[\"order-id\"]).to.equal(30)",
+							"    pm.expect(pm.response.json()[\"service-id\"]).to.equal(40)",
+							"    pm.expect(pm.response.json()[\"status\"]).to.equal(\"Cancelled\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fee\": 400,\n  \"order-id\": 30,\n  \"service-id\": 40,\n  \"user-id\": 2\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/failedServiceFee",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"failedServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "attempt to fail previously failed fee",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"FailedServiceFee: this fee has already been Cancelled\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fee\": 400,\n  \"order-id\": 30,\n  \"service-id\": 40,\n  \"user-id\": 2\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/failedServiceFee",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"failedServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "cancel attempt of an inexistent reservation",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"FailedServiceFee: no service log with that parameters\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fee\": -400,\n  \"order-id\": 30,\n  \"service-id\": 50,\n  \"user-id\": 1\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/failedServiceFee",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"failedServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "successful funds transfer",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"amount\"]).to.equal(200)",
+							"    pm.expect(pm.response.json()[\"event-type\"]).to.equal(\"Withdrawn-Transfer\")",
+							"    pm.expect(pm.response.json()[\"receive-account\"]).to.equal(1)",
+							"    pm.expect(pm.response.json()[\"transfer-account\"]).to.equal(2)",
+							"    pm.expect(pm.response.json()[\"status\"]).to.equal(\"Completed\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"receiver-id\": 1,\n  \"sender-id\": 2,\n  \"transfer-amount\": 200\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/transfer",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "funds transfer attempt with not enough funds",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"TransferMoney: not enough funds to transfer\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"receiver-id\": 1,\n  \"sender-id\": 2,\n  \"transfer-amount\": 2000\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/transfer",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "negative funds transfer attempt",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"TransferMoney: can't transfer negative amount\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"receiver-id\": 1,\n  \"sender-id\": 2,\n  \"transfer-amount\": -2000\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/transfer",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "funds transfer attempt with illegal account",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(500);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect(pm.response.json()[\"Message\"]).to.equal(\"TransferMoney: sql: no rows in result set\")",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"receiver-id\": -1,\n  \"sender-id\": 20,\n  \"transfer-amount\": 2000\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/account/transfer",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "generate monthly report",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect('csv-file-link' in pm.response.json())",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"date-from\": \"2022-01-01\",\n  \"date-to\": \"2022-12-31\"\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/reports/servicesMonthly",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"reports",
+						"servicesMonthly"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "generate transaction log",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"response is ok\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"verify response\",  () => {",
+							"    pm.expect('csv-file-link' in pm.response.json())",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"date-from\": \"2022-01-01\",\n  \"date-to\": \"2022-12-31\",\n  \"page\": 1,\n  \"sort-by\": \"amount\",\n  \"sort-order\": \"descending\",\n  \"user-id\": 1\n}"
+				},
+				"url": {
+					"raw": "http://billing:8080/reports/transactions",
+					"protocol": "http",
+					"host": [
+						"billing"
+					],
+					"port": "8080",
+					"path": [
+						"reports",
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

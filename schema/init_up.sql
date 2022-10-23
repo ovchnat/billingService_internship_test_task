@@ -32,6 +32,10 @@ CREATE TABLE service_log
     updated_at timestamp
 );
 
-INSERT INTO accounts(user_id, curr_amount, pending_amount, last_updated)
-VALUES (2233, 500, 0, CURRENT_TIMESTAMP),
-       (2237, 800, 0, CURRENT_TIMESTAMP);
+CREATE VIEW TransactionsByAccount AS
+SELECT account_id_from AS account_id, account_id_to, transaction_sum, NULL AS service_id, NULL AS order_id, status, event_type, created_at::TIMESTAMP WITHOUT TIME ZONE,  updated_at::TIMESTAMP WITHOUT TIME ZONE
+FROM transactions_log WHERE status='Completed'
+UNION ALL
+SELECT account_id, NULL as account_id_to, invoice as transaction_sum, service_id, order_id, status, 'Service-purchase' AS event_type,
+       created_at, updated_at
+FROM service_log WHERE status='Approved';

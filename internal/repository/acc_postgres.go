@@ -121,6 +121,16 @@ func NewAccPostgres(db *sqlx.DB) *AccPostgres {
 
 func (r *AccPostgres) GetBalance(userid entity.GetBalanceRequest, ctx *gin.Context) (entity.GetBalanceResponse, error) {
 	var balanceRes entity.GetBalanceResponse
+
+	fail := func(err error) (entity.GetBalanceResponse, error) {
+		return balanceRes, fmt.Errorf("GetBalance: %v", err)
+	}
+
+	if userid.UserId <= 0 {
+		err := errors.New("illegal user ID")
+		return fail(err)
+	}
+
 	query := fmt.Sprintf(
 		"SELECT ac.curr_amount, ac.pending_amount FROM accounts ac " +
 			"WHERE user_id = $1")
@@ -142,12 +152,17 @@ func (r *AccPostgres) DepositMoney(depositReq entity.UpdateBalanceRequest, ctx *
 		return depositResponse, fmt.Errorf("DepositMoney: %v", err)
 	}
 
-	if depositReq.Sum < 0 {
-		err := errors.New("can't add negative funds")
+	if depositReq.Sum <= 0 {
+		err := errors.New("can't add negative or zero funds")
 		return fail(err)
 	}
 
-	var exists bool
+	if depositReq.UserId <= 0 {
+		err := errors.New("illegal user ID")
+		return fail(err)
+	}
+
+	var exists int64
 
 	if err := r.db.QueryRow(accByIdQuery, depositReq.UserId).Scan(&exists); err != nil {
 		if err == sql.ErrNoRows {
@@ -157,7 +172,7 @@ func (r *AccPostgres) DepositMoney(depositReq entity.UpdateBalanceRequest, ctx *
 			); err != nil {
 				return depositResponse, err
 			}
-			logrus.Print("created new acc", depositReq.UserId, "in database")
+			logrus.Print("created new account ", depositReq.UserId, " in database")
 		}
 	}
 
@@ -231,6 +246,12 @@ func (r *AccPostgres) WithdrawMoney(withdrawReq entity.UpdateBalanceRequest, ctx
 		err := errors.New("can't withdraw negative funds")
 		return fail(err)
 	}
+
+	if withdrawReq.UserId <= 0 {
+		err := errors.New("illegal user ID")
+		return fail(err)
+	}
+
 	tx, err := r.db.BeginTx(ctx, nil)
 
 	if err != nil {
@@ -425,6 +446,21 @@ func (r *AccPostgres) ReserveServiceFee(reserveSerFeeReq entity.ReserveServiceFe
 		return fail(err)
 	}
 
+	if reserveSerFeeReq.ServiceId < 0 {
+		err := errors.New("illegal service ID")
+		return fail(err)
+	}
+
+	if reserveSerFeeReq.OrderId < 0 {
+		err := errors.New("illegal order ID")
+		return fail(err)
+	}
+
+	if reserveSerFeeReq.UserId <= 0 {
+		err := errors.New("illegal user ID")
+		return fail(err)
+	}
+
 	tx, err := r.db.BeginTx(ctx, nil)
 
 	if err != nil {
@@ -498,6 +534,11 @@ func (r *AccPostgres) ApproveServiceFee(approveSerFeeReq entity.StatusServiceFee
 
 	if approveSerFeeReq.Fee < 0 {
 		err := errors.New("can't withdraw negative funds")
+		return fail(err)
+	}
+
+	if approveSerFeeReq.UserId <= 0 {
+		err := errors.New("illegal user ID")
 		return fail(err)
 	}
 
@@ -602,6 +643,11 @@ func (r *AccPostgres) FailedServiceFee(failedServiceFeeReq entity.StatusServiceF
 
 	fail := func(err error) (entity.StatusServiceFeeResponse, error) {
 		return failedServiceFee, fmt.Errorf("FailedServiceFee: %v", err)
+	}
+
+	if failedServiceFeeReq.UserId <= 0 {
+		err := errors.New("illegal user ID")
+		return fail(err)
 	}
 
 	tx, err := r.db.BeginTx(ctx, nil)

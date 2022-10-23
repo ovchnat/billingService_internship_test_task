@@ -8,6 +8,14 @@ import (
 	"strconv"
 )
 
+// @Summary getBalance
+// @Tags account
+// @Description "Deposit money for a given account"
+// @Produce json
+// @Param id path integer true "user id"
+// @Success 200 {object} entity.GetBalanceResponse
+// @Failure 500 {object} errorAcc
+// @Router /account/getBalance/{id} [get]
 func (h *Handler) getBalance(c *gin.Context) {
 	idStringInput := c.Param("id")
 	logrus.Printf("Input read: %v %T", idStringInput, idStringInput)
@@ -15,6 +23,7 @@ func (h *Handler) getBalance(c *gin.Context) {
 	idNumberInput, err := strconv.ParseInt(idStringInput, 10, 64)
 	if err != nil {
 		NewErrorResponse(c, http.StatusInternalServerError, err.Error())
+		return
 	}
 
 	input := entity.GetBalanceRequest{UserId: idNumberInput}
@@ -30,6 +39,15 @@ func (h *Handler) getBalance(c *gin.Context) {
 	}
 }
 
+// @Summary depositMoney
+// @Tags account
+// @Description "deposit money for a given account"
+// @Accept json
+// @Produce json
+// @Param input body entity.UpdateBalanceRequest true "JSON object with user ID and money amount to deposit"
+// @Success 200 {object} entity.UpdateBalanceDepositResponse
+// @Failure 500 {object} errorAcc
+// @Router /account/depositMoney [post]
 func (h *Handler) depositMoney(c *gin.Context) {
 	var updateBalanceDepositRequest entity.UpdateBalanceRequest
 
@@ -51,6 +69,15 @@ func (h *Handler) depositMoney(c *gin.Context) {
 	}
 }
 
+// @Summary withdrawMoney
+// @Tags account
+// @Description "Withdraw money for a given account"
+// @Accept json
+// @Produce json
+// @Param input body entity.UpdateBalanceRequest true "JSON object with user ID and money amount to withdraw"
+// @Success 200 {object} entity.UpdateBalanceWithdrawResponse
+// @Failure 500 {object} errorAcc
+// @Router /account/withdrawMoney [post]
 func (h *Handler) withdrawMoney(c *gin.Context) {
 	var updateBalanceWithdrawRequest entity.UpdateBalanceRequest
 
@@ -72,6 +99,15 @@ func (h *Handler) withdrawMoney(c *gin.Context) {
 	}
 }
 
+// @Summary reserveServiceFee
+// @Tags account
+// @Description "Put specified amount of money in reservation for a given account"
+// @Accept json
+// @Produce json
+// @Param input body entity.ReserveServiceFeeRequest true "JSON object with used ID, service ID, order ID and fee amount"
+// @Success 200 {object} entity.ReserveServiceFeeResponse
+// @Failure 500 {object} errorAcc
+// @Router /account/reserveServiceFee [post]
 func (h *Handler) reserveServiceFee(c *gin.Context) {
 	var reserveServiceFeeRequest entity.ReserveServiceFeeRequest
 
@@ -95,6 +131,15 @@ func (h *Handler) reserveServiceFee(c *gin.Context) {
 	}
 }
 
+// @Summary approveOrderFee
+// @Tags account
+// @Description "Approve specified reservation"
+// @Accept json
+// @Produce json
+// @Param input body entity.StatusServiceFeeRequest true "JSON object with used ID, service ID, order ID and fee amount"
+// @Success 200 {object} entity.StatusServiceFeeResponse
+// @Failure 500 {object} errorAcc
+// @Router /account/approveOrderFee [post]
 func (h *Handler) approveOrderFee(c *gin.Context) {
 	var statusApproveServiceFeeRequest entity.StatusServiceFeeRequest
 
@@ -118,6 +163,15 @@ func (h *Handler) approveOrderFee(c *gin.Context) {
 	}
 }
 
+// @Summary failedServiceFee
+// @Tags account
+// @Description "Mark reservation as failed and release funds"
+// @Accept json
+// @Produce json
+// @Param input body entity.StatusServiceFeeRequest true "JSON object with used ID, service ID, order ID and fee amount"
+// @Success 200 {object} entity.StatusServiceFeeResponse
+// @Failure 500 {object} errorAcc
+// @Router /account/failedServiceFee [post]
 func (h *Handler) failedServiceFee(c *gin.Context) {
 	var statusFailedServiceFeeRequest entity.StatusServiceFeeRequest
 
@@ -141,6 +195,15 @@ func (h *Handler) failedServiceFee(c *gin.Context) {
 	}
 }
 
+// @Summary transfer
+// @Tags account
+// @Description "Transfer funds from one account to another"
+// @Accept json
+// @Produce json
+// @Param input body entity.TransferRequest true "JSON object with sender ID, receiver ID and money amount"
+// @Success 200 {object} entity.TransferResponse
+// @Failure 500 {object} errorAcc
+// @Router /account/transfer [post]
 func (h *Handler) transfer(c *gin.Context) {
 	var transferRequest entity.TransferRequest
 

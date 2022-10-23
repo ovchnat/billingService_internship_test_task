@@ -7,6 +7,13 @@ import (
 	"github.com/spf13/viper"
 )
 
+// @title Billing App API
+// @version 1.0
+// @description API server for Avito billing app
+
+// @host localhost:8080
+// @BasePath /
+
 func main() {
 	logrus.SetFormatter(new(logrus.JSONFormatter))
 	if err := initConfig(); err != nil {

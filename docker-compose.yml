@@ -1,0 +1,49 @@
+version: '3.9'
+
+services:
+
+  billing:
+    container_name: billing
+    build: .
+    image: billing
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_PASSWORD: straykz
+    restart: always
+    volumes:
+      - reports:/reports
+    ports:
+    - 8080:8080/tcp
+
+  postgres:
+    container_name: postgres
+    image: postgres:15.0-alpine
+    environment:
+      PGDATA: /var/lib/postgresql/data
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: straykz
+      POSTGRES_USER: postgres
+    restart: always
+    volumes:
+#      - postgres_data:/var/lib/postgresql/data
+      - ./schema/init_up.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+
+  newman:
+    container_name: newman
+    image: postman/newman
+    volumes:
+      - ./collections:/etc/newman
+    command: run /etc/newman/integration.json
+    profiles:
+      - testing
+    depends_on:
+      - billing
+
+volumes:
+  postgres_data:
+  reports:

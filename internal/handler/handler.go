@@ -1,6 +1,7 @@
 package handler
 
 import (
+	_ "billingService/docs"
 	"billingService/internal/repository"
 	"billingService/internal/service"
 	"context"
@@ -8,6 +9,8 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"net/http"
 	"os"
 )
@@ -84,6 +87,8 @@ func (h *Handler) configureRoutes() *gin.Engine {
 		reports.GET("/:path", h.getCSVFile)
 		reports.POST("/transactions", h.transactions) // create csv report for user transactions
 	}
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	return router
 }
