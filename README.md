@@ -6,9 +6,7 @@
 make compose-up
 ```
 
-## Project Layout
-
-The starter kit uses the following project layout:
+## Структура проекта
  
 ```
 .
