@@ -23,6 +23,53 @@ make compose-up
 └── schema               метаданные о БД
 ```
 
+## Руководство:
+
+Для развёртывания приложения используется docker-compose и GNU Make:
+
+```
+$ make help
+Usage:
+  make <target>
+  help             Output help
+  compose-up       Run billing app along with PostgreSQL server using docker-compose
+  compose-down     Stop billing app and PostgreSQL server launched using docker-compose
+  compose-test     Run integration testing in docker environment
+  run              Run billing app locally
+  build            Build billing app locally
+  test             Run tests on billing app locally
+```
+
+Для запуска контейнеров сервиса и базы данных необходимо выполнить команду:
+
+```
+make compose-up
+```
+
+Остановка сервисов:
+
+```
+make compose-down
+```
+
+Проект включает **интеграционный тест, созданный в Postman (collections/integration.json)**. Для выполнения тестирования используется вспомонательный контейнер "newman". Запуск тестирования и вывод результатов производится командой:
+
+```
+make compose-test
+```
+# #   ![testing-image](/assets/testing-csv.png) </br>
+
+В проект интегрирована автоматическая документация **Swagger**. Она доступна по адресу: [https://localhost:8080/swagger/index.html](https://localhost:8080/swagger/index.html)
+
+#   ![swagger-image](/assets/swagger-works.png) </br>
+
+Для включения постоянного хранилища данных в PostgreSQL необходимо подмонтировать директорию к контейнеру БД. Для этого нужно раскомментировать в файле docker-compose.yml следующую строку:
+
+```
+#      - postgres_data:/var/lib/postgresql/data
+```
+
+
 # Реализованные методы:
 
 ##### **Метод получения баланса пользователя:** *принимает id пользователя.* <br/>
