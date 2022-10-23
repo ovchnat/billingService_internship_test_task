@@ -51,7 +51,7 @@ make compose-down
 ```
 make compose-test
 ```
-Работа интеграционных тестов:
+Примера вывода результатов интеграционного теста:
 #  ![Работа интеграционных тестов:](/assets/testing-works.png) </br>
 
 В проект интегрирована автоматическая документация **Swagger**. Она доступна по адресу: [https://localhost:8080/swagger/index.html](https://localhost:8080/swagger/index.html)
