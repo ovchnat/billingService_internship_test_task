@@ -14,6 +14,10 @@ func NewReportOperationsService(repo repository.ReportOperations) *ReportOperati
 	return &ReportOperationsService{repo: repo}
 }
 
-func (s *ReportOperationsService) ServiceMonthlyReport(serFeeReq entity.ServiceMonthlyReportReq, ctx *gin.Context) (entity.ServiceMonthlyReportResponse, error) {
-	return s.repo.ServiceMonthlyReport(serFeeReq, ctx)
+func (s *ReportOperationsService) WriteServiceMonthlyReport(serFeeReq entity.ServiceMonthlyReportReq, ctx *gin.Context) (entity.ServiceMonthlyReportResponse, error) {
+	return s.repo.WriteServiceMonthlyReport(serFeeReq, ctx)
+}
+
+func (s *ReportOperationsService) GetTransactions(getTransactionsReq entity.GetTransactionsReq, ctx *gin.Context) (entity.GetTransactionsResponse, error) {
+	return s.repo.GetTransactions(getTransactionsReq, ctx)
 }

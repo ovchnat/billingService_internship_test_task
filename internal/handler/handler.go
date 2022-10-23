@@ -68,9 +68,9 @@ func (h *Handler) configureRoutes() *gin.Engine {
 
 	accountChanges := router.Group("/account/")
 	{
+		accountChanges.GET("/getBalance/:id", h.getBalance)
 		accountChanges.POST("/depositMoney", h.depositMoney)
 		accountChanges.POST("/withdrawMoney", h.withdrawMoney)
-		accountChanges.GET("/getBalance", h.getBalance)
 		accountChanges.POST("/reserveServiceFee", h.reserveServiceFee)
 		accountChanges.POST("/approveServiceFee", h.approveOrderFee)
 		accountChanges.POST("/transfer", h.transfer)
@@ -80,8 +80,9 @@ func (h *Handler) configureRoutes() *gin.Engine {
 
 	reports := router.Group("/reports")
 	{
-		reports.GET("/servicesMonthly", h.servicesMonthly) // csv report for the accounting
-		reports.GET("/transactions", h.transactions)
+		reports.POST("/servicesMonthly", h.servicesMonthly) // create csv report for the accounting
+		reports.GET("/:path", h.getCSVFile)
+		reports.POST("/transactions", h.transactions) // create csv report for user transactions
 	}
 
 	return router

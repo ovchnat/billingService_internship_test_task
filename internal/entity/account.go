@@ -24,10 +24,18 @@ type UpdateBalanceRequest struct {
 	UserId int64 `json:"user-id" binding:"required"`
 	Sum    int64 `json:"update-amount" binding:"required"`
 }
-type UpdateBalanceResponse struct {
+type UpdateBalanceDepositResponse struct {
 	AccountId int64     `json:"account-id" binding:"required"`
-	Sum       int64     `json:"sum" binding:"required"`
+	Sum       int64     `json:"deposit-sum" binding:"required"`
 	Status    string    `json:"operation-status" binding:"required"`
-	EventType string    `json:"event-type"`
+	EventType string    `json:"operation-event"`
+	CreatedAt time.Time `json:"created-at"`
+}
+
+type UpdateBalanceWithdrawResponse struct {
+	AccountId int64     `json:"account-id" binding:"required"`
+	Sum       int64     `json:"deposit-sum" binding:"required"`
+	Status    string    `json:"operation-status" binding:"required"`
+	EventType string    `json:"operation-event"`
 	CreatedAt time.Time `json:"created-at"`
 }

@@ -65,7 +65,7 @@ const decreasePendingAmountQuery = ` UPDATE accounts
 //goland:noinspection ALL
 const createAccQuery = ` INSERT INTO 
 	accounts(user_id, curr_amount, pending_amount, last_updated)
-	VALUES ($1, $2, 0, current_timestamp)
+	VALUES ($1, 0, 0, current_timestamp)
 	RETURNING id
 `
 
@@ -135,11 +135,11 @@ func (r *AccPostgres) GetBalance(userid entity.GetBalanceRequest, ctx *gin.Conte
 	return entity.GetBalanceResponse{Balance: balanceRes.Balance, Pending: balanceRes.Pending}, nil
 }
 
-func (r *AccPostgres) DepositMoney(depositReq entity.UpdateBalanceRequest, ctx *gin.Context) (entity.UpdateBalanceResponse, error) {
-	var depositRes entity.UpdateBalanceResponse
+func (r *AccPostgres) DepositMoney(depositReq entity.UpdateBalanceRequest, ctx *gin.Context) (entity.UpdateBalanceDepositResponse, error) {
+	var depositResponse entity.UpdateBalanceDepositResponse
 
-	fail := func(err error) (entity.UpdateBalanceResponse, error) {
-		return depositRes, fmt.Errorf("DepositMoney: %v", err)
+	fail := func(err error) (entity.UpdateBalanceDepositResponse, error) {
+		return depositResponse, fmt.Errorf("DepositMoney: %v", err)
 	}
 
 	if depositReq.Sum < 0 {
@@ -151,13 +151,13 @@ func (r *AccPostgres) DepositMoney(depositReq entity.UpdateBalanceRequest, ctx *
 
 	if err := r.db.QueryRow(accByIdQuery, depositReq.UserId).Scan(&exists); err != nil {
 		if err == sql.ErrNoRows {
-			rows := r.db.QueryRow(createAccQuery, depositReq.UserId, depositReq.Sum)
+			rows := r.db.QueryRow(createAccQuery, depositReq.UserId)
 			if err := rows.Scan(
-				&depositRes.AccountId,
+				&depositResponse.AccountId,
 			); err != nil {
-				return depositRes, err
+				return depositResponse, err
 			}
-			logrus.Print("Created new acc", depositReq.UserId, "in database, added ", depositReq.Sum, " funds")
+			logrus.Print("created new acc", depositReq.UserId, "in database")
 		}
 	}
 
@@ -201,30 +201,30 @@ func (r *AccPostgres) DepositMoney(depositReq entity.UpdateBalanceRequest, ctx *
 
 	rows := r.db.QueryRow(getTransactionQuery, depositReq.UserId)
 	if err := rows.Scan(
-		&depositRes.AccountId,
+		&depositResponse.AccountId,
 		&holder,
-		&depositRes.Sum,
-		&depositRes.Status,
-		&depositRes.EventType,
-		&depositRes.CreatedAt,
+		&depositResponse.Sum,
+		&depositResponse.Status,
+		&depositResponse.EventType,
+		&depositResponse.CreatedAt,
 	); err != nil {
-		return depositRes, err
+		return depositResponse, err
 	}
 
-	return entity.UpdateBalanceResponse{
-		AccountId: depositRes.AccountId,
-		Sum:       depositRes.Sum,
-		Status:    depositRes.Status,
-		EventType: depositRes.EventType,
-		CreatedAt: depositRes.CreatedAt,
+	return entity.UpdateBalanceDepositResponse{
+		AccountId: depositResponse.AccountId,
+		Sum:       depositResponse.Sum,
+		Status:    depositResponse.Status,
+		EventType: depositResponse.EventType,
+		CreatedAt: depositResponse.CreatedAt,
 	}, nil
 }
 
-func (r *AccPostgres) WithdrawMoney(withdrawReq entity.UpdateBalanceRequest, ctx *gin.Context) (entity.UpdateBalanceResponse, error) {
-	var depositRes entity.UpdateBalanceResponse
+func (r *AccPostgres) WithdrawMoney(withdrawReq entity.UpdateBalanceRequest, ctx *gin.Context) (entity.UpdateBalanceWithdrawResponse, error) {
+	var withdrawResponse entity.UpdateBalanceWithdrawResponse
 
-	fail := func(err error) (entity.UpdateBalanceResponse, error) {
-		return depositRes, fmt.Errorf("WithdrawMoney: %v", err)
+	fail := func(err error) (entity.UpdateBalanceWithdrawResponse, error) {
+		return withdrawResponse, fmt.Errorf("WithdrawMoney: %v", err)
 	}
 
 	if withdrawReq.Sum < 0 {
@@ -258,13 +258,14 @@ func (r *AccPostgres) WithdrawMoney(withdrawReq entity.UpdateBalanceRequest, ctx
 
 	if err = tx.QueryRowContext(ctx, getIdBalanceQuery, withdrawReq.UserId).Scan(&idBalanceHolder.Id, &idBalanceHolder.Balance); err != nil {
 		if err == sql.ErrNoRows {
-			logrus.Errorf("No account with that user id. Add a new one by depositing money.")
+			logrus.Errorf("no account with that user id: add a new one by depositing money")
 			return fail(err)
 		}
 		return fail(err)
 	}
 	if idBalanceHolder.Balance < withdrawReq.Sum {
 		err = errors.New("not enough funds")
+		logrus.Errorf("not enough funds on the account")
 		return fail(err)
 	}
 	_, err = tx.ExecContext(ctx, withdrawFundsQuery, withdrawReq.UserId, withdrawReq.Sum)
@@ -286,22 +287,22 @@ func (r *AccPostgres) WithdrawMoney(withdrawReq entity.UpdateBalanceRequest, ctx
 	var holder int
 	rows := r.db.QueryRow(getTransactionQuery, withdrawReq.UserId)
 	if err := rows.Scan(
-		&depositRes.AccountId,
+		&withdrawResponse.AccountId,
 		&holder,
-		&depositRes.Sum,
-		&depositRes.Status,
-		&depositRes.EventType,
-		&depositRes.CreatedAt,
+		&withdrawResponse.Sum,
+		&withdrawResponse.Status,
+		&withdrawResponse.EventType,
+		&withdrawResponse.CreatedAt,
 	); err != nil {
-		return depositRes, err
+		return withdrawResponse, err
 	}
-	logrus.Print("Found acc ", withdrawReq.UserId, "in database, withdrew ", withdrawReq.Sum, " funds")
-	return entity.UpdateBalanceResponse{
-		AccountId: depositRes.AccountId,
-		Sum:       depositRes.Sum,
-		Status:    depositRes.Status,
-		EventType: depositRes.EventType,
-		CreatedAt: depositRes.CreatedAt,
+	logrus.Print("found acc ", withdrawReq.UserId, " in database, withdrew ", withdrawReq.Sum, " funds")
+	return entity.UpdateBalanceWithdrawResponse{
+		AccountId: withdrawResponse.AccountId,
+		Sum:       withdrawResponse.Sum,
+		Status:    withdrawResponse.Status,
+		EventType: withdrawResponse.EventType,
+		CreatedAt: withdrawResponse.CreatedAt,
 	}, nil
 }
 
@@ -344,7 +345,7 @@ func (r *AccPostgres) Transfer(transferReq entity.TransferRequest, ctx *gin.Cont
 
 	if err = tx.QueryRowContext(ctx, accByIdQuery, transferReq.ReceiverId).Scan(&idBalanceHolder.Id); err != nil {
 		if err == sql.ErrNoRows {
-			logrus.Errorf("No account with that receiver id. Add a new one by depositing money.")
+			logrus.Errorf("no account with that receiver id: add a new one by depositing money")
 			return fail(err)
 		}
 		return fail(err)
@@ -352,7 +353,7 @@ func (r *AccPostgres) Transfer(transferReq entity.TransferRequest, ctx *gin.Cont
 
 	if err = tx.QueryRowContext(ctx, getIdBalanceQuery, transferReq.SenderId).Scan(&idBalanceHolder.Id, &idBalanceHolder.Balance); err != nil {
 		if err == sql.ErrNoRows {
-			logrus.Errorf("No account with that sender id. Add a new one by depositing money.")
+			logrus.Errorf("no account with that sender id: add a new one by depositing money.")
 			return fail(err)
 		}
 		return fail(err)
@@ -445,11 +446,11 @@ func (r *AccPostgres) ReserveServiceFee(reserveSerFeeReq entity.ReserveServiceFe
 		}
 	}()
 
-	var exists bool
+	var exists int64
 
 	if err = tx.QueryRowContext(ctx, accByIdQuery, reserveSerFeeReq.UserId).Scan(&exists); err != nil {
 		if err == sql.ErrNoRows {
-			logrus.Errorf("No account with that user id. Add a new one by depositing money.")
+			logrus.Errorf("no account with that user id: add a new one by depositing money")
 			return fail(err)
 		}
 		return fail(err)
@@ -651,8 +652,8 @@ func (r *AccPostgres) FailedServiceFee(failedServiceFeeReq entity.StatusServiceF
 		}
 		return fail(err)
 	} else {
-		if status == "Approved" {
-			err = errors.New("this fee has already been approved")
+		if status == "Approved" || status == "Cancelled" {
+			err = fmt.Errorf("this fee has already been %s", status)
 			return fail(err)
 		}
 	}

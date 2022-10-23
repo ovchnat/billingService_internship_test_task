@@ -18,8 +18,16 @@ func (s *BalanceOperationsService) GetBalance(userid entity.GetBalanceRequest, c
 	return s.repo.GetBalance(userid, ctx)
 }
 
-func (s *BalanceOperationsService) DepositMoney(depReq entity.UpdateBalanceRequest, ctx *gin.Context) (entity.UpdateBalanceResponse, error) {
+func (s *BalanceOperationsService) DepositMoney(depReq entity.UpdateBalanceRequest, ctx *gin.Context) (entity.UpdateBalanceDepositResponse, error) {
 	return s.repo.DepositMoney(depReq, ctx)
+}
+
+func (s *BalanceOperationsService) WithdrawMoney(withdrawReq entity.UpdateBalanceRequest, ctx *gin.Context) (entity.UpdateBalanceWithdrawResponse, error) {
+	return s.repo.WithdrawMoney(withdrawReq, ctx)
+}
+
+func (s *BalanceOperationsService) Transfer(transferReq entity.TransferRequest, ctx *gin.Context) (entity.TransferResponse, error) {
+	return s.repo.Transfer(transferReq, ctx)
 }
 
 func (s *BalanceOperationsService) ReserveServiceFee(reserveReq entity.ReserveServiceFeeRequest, ctx *gin.Context) (entity.ReserveServiceFeeResponse, error) {
@@ -28,14 +36,6 @@ func (s *BalanceOperationsService) ReserveServiceFee(reserveReq entity.ReserveSe
 
 func (s *BalanceOperationsService) ApproveServiceFee(appSerFeeReq entity.StatusServiceFeeRequest, ctx *gin.Context) (entity.StatusServiceFeeResponse, error) {
 	return s.repo.ApproveServiceFee(appSerFeeReq, ctx)
-}
-
-func (s *BalanceOperationsService) WithdrawMoney(withdrawReq entity.UpdateBalanceRequest, ctx *gin.Context) (entity.UpdateBalanceResponse, error) {
-	return s.repo.WithdrawMoney(withdrawReq, ctx)
-}
-
-func (s *BalanceOperationsService) Transfer(transferReq entity.TransferRequest, ctx *gin.Context) (entity.TransferResponse, error) {
-	return s.repo.Transfer(transferReq, ctx)
 }
 
 func (s *BalanceOperationsService) FailedServiceFee(failedServiceFeeReq entity.StatusServiceFeeRequest, ctx *gin.Context) (entity.StatusServiceFeeResponse, error) {

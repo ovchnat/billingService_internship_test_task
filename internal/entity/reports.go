@@ -1,18 +1,23 @@
 package entity
 
 type ServiceMonthlyReportReq struct {
-	ServiceId int64  `json:"service-id"`
-	DateFrom  string `json:"date-from"`
-	DateTo    string `json:"date-to"`
+	DateFrom string `json:"date-from"`
+	DateTo   string `json:"date-to"`
 }
 
 type ServiceMonthlyReportResponse struct {
-	ServiceId int64 `json:"service-id"`
-	Sum       int64 `json:"date-from"`
+	FileLink string `json:"csv-file-link"`
 }
 
 type GetTransactionsReq struct {
+	UserId    int64  `json:"user-id"`
+	DateFrom  string `json:"date-from"`
+	DateTo    string `json:"date-to"`
+	SortBy    string `json:"sort-by"`
+	SortOrder string `json:"sort-order"`
+	Page      int    `json:"page"`
 }
 
 type GetTransactionsResponse struct {
+	FileLink string `json:"csv-file-link"`
 }
