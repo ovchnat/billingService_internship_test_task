@@ -14,6 +14,8 @@
 * `POST /reports/transactions`: формирование CSV-выписки по операциям определенного пользователя за указанный период
 * `GET /reports/:path`: экспорт указанного в пути CSV-файла
 
+В /collections/api_methods.json находится шаблон запросов.
+
 ## Структура проекта
  
 ```
@@ -45,7 +47,6 @@ Usage:
   compose-test     Run integration testing in docker environment
   run              Run billing app locally
   build            Build billing app locally
-  test             Run tests on billing app locally
 ```
 
 Для запуска контейнеров сервиса и базы данных необходимо выполнить команду:
