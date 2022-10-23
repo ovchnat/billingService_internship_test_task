@@ -1,0 +1,348 @@
+{
+	"info": {
+		"_postman_id": "c5eb1396-af29-4928-82d5-c1c6a5c51989",
+		"name": "billingService",
+		"description": "This is a simple methods collection for the backend internship test task at Avito 2022.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "15851405"
+	},
+	"item": [
+		{
+			"name": "depositMoney user-id=10",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user-id\": 10,\r\n    \"update-amount\": 1000000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/account/depositMoney",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"depositMoney"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "depositMoney user-id=20",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user-id\": 20,\r\n    \"update-amount\": 1000000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/account/depositMoney",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"depositMoney"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getBalance",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/account/getBalance/20",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"getBalance",
+						"20"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "withdrawMoney",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user-id\": 10,\r\n    \"update-amount\": 400\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/account/withdrawMoney",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"withdrawMoney"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "transfer",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"sender-id\": 10,\r\n    \"receiver-id\": 20,\r\n    \"transfer-amount\": 5000\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/account/transfer",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reserveServiceFee service-id=1253",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user-id\": 10,\r\n    \"service-id\": 1253,\r\n    \"order-id\": 782,\r\n    \"fee\": 400\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/account/reserveServiceFee",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"reserveServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "reserveServiceFee service-id=1263",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user-id\": 10,\r\n    \"service-id\": 1263,\r\n    \"order-id\": 782,\r\n    \"fee\": 400\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/account/reserveServiceFee",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"reserveServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "approveServiceFee service-id=1253",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user-id\": 10,\r\n    \"service-id\": 1253,\r\n    \"order-id\": 782,\r\n    \"fee\": 400\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/account/approveServiceFee",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"approveServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "failedServiceFee",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n     \"user-id\": 10,\r\n    \"service-id\": 1263,\r\n    \"order-id\": 782,\r\n    \"fee\": 400\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/account/failedServiceFee",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"account",
+						"failedServiceFee"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "csvExport",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"date-from\": \"2022-10-22\",\r\n    \"date-to\": \"2022-11-11\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/reports/servicesMonthly",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"reports",
+						"servicesMonthly"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getReportByLink",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/reports/:path",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"reports",
+						":path"
+					],
+					"variable": [
+						{
+							"key": "path",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createTransactionsByUser",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"user-id\": 10,\r\n    \"date-from\": \"2022-10-22\",\r\n    \"date-to\": \"2022-11-11\",\r\n    \"sort-by\": \"date\",\r\n    \"sort-order\": \"DESC\",\r\n    \"page\": 1\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/reports/transactions",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"reports",
+						"transactions"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
